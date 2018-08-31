@@ -17,13 +17,13 @@ public class DataManagerTest {
     }
     @Before
     public void setUp(){
-        sDataManager = DataManager.getInstance();
+
         sDataManager.getNotes().clear();
         sDataManager.initializeExampleNotes();
     }
     @Test
     public void createNewNote() {
-         sDataManager = DataManager.getInstance();
+
         CourseInfo course = sDataManager.getCourse("android_intents");
         String noteTitle = "Working with intents";
         String noteText = "Intents are cool as we can open an activity through an intent";
@@ -38,10 +38,11 @@ public class DataManagerTest {
         assertEquals(course,compareNote.getCourse());
         assertEquals(noteTitle,compareNote.getTitle());
         assertEquals(noteText,compareNote.getText());
+
     }
     @Test
     public void findSimilarNotes(){
-        sDataManager = DataManager.getInstance();
+
         CourseInfo course = sDataManager.getCourse("android_intents");
         String noteTitle = "Working with intents";
         String noteText1 = "Intents are cool as we can open an activity through an intent";
@@ -64,5 +65,39 @@ public class DataManagerTest {
 
         int index2 = sDataManager.findNote(note2);
         assertEquals(noteIndex2,index2);
+    }
+    @Test
+    public void removeNote(){
+        CourseInfo course = sDataManager.getCourse("android_intents");
+        String noteTitle = "Working with intents";
+        String noteText = "Intents are cool as we can open an activity through an intent";
+
+        int newNoteIndex = sDataManager.createNewNote();
+        NoteInfo note = sDataManager.getNotes().get(newNoteIndex);
+        note.setCourse(course);
+        note.setTitle(noteTitle);
+        note.setText(noteText);
+        sDataManager.removeNote(newNoteIndex);
+
+        int index = sDataManager.findNote(note);
+        assertEquals(-1,index);
+
+    }
+    @Test
+    public void checkNoteCount(){
+        CourseInfo course = sDataManager.getCourse("java_lang");
+        String noteTitle = "Working with intents";
+        String noteText = "Intents are cool as we can open an activity through an intent";
+
+        int noteCount = sDataManager.getNoteCount(course);
+        int newNoteIndex = sDataManager.createNewNote();
+        NoteInfo note = sDataManager.getNotes().get(newNoteIndex);
+        note.setCourse(course);
+        note.setTitle(noteTitle);
+        note.setText(noteText);
+
+        int newNoteCount = sDataManager.getNoteCount(course);
+        assertEquals(noteCount+1,newNoteCount);
+
     }
 }
