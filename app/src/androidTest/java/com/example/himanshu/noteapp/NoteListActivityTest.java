@@ -7,6 +7,7 @@ import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
 
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
@@ -26,7 +27,12 @@ public class NoteListActivityTest {
     public static void initDataManager(){
         sDataManager = DataManager.getInstance();
     }
+    @Before
+    public void setUp(){
 
+        sDataManager.getNotes().clear();
+        sDataManager.initializeExampleNotes();
+    }
     @Rule
     public ActivityTestRule<NoteListActivity> mNoteListActivity = new ActivityTestRule<>(NoteListActivity.class);
 
@@ -57,5 +63,30 @@ public class NoteListActivityTest {
         assertEquals(noteTitle,note.getTitle());
         assertEquals(noteText,note.getText());
 
+    }
+    @Test
+    public void checkCreatedNoteinList(){
+        CourseInfo course = sDataManager.getCourse("android_async");
+        String noteTitle = "Working with async tasks";
+        String noteText = "Async tasks are cool as we can handle long running tasks in the background at ease.";
+
+
+
+        onView(withId(R.id.fab)).perform(click());
+        onView(withId(R.id.spinner_courses)).perform(click());
+        onData(allOf(instanceOf(CourseInfo.class),equalTo(course))).perform(click());
+        onView(withId(R.id.text_note_title)).perform(typeText(noteTitle), ViewActions.closeSoftKeyboard());
+        onView(withId(R.id.text_note_text)).perform(typeText(noteText),ViewActions.closeSoftKeyboard());
+
+        Espresso.pressBack();
+        int index = sDataManager.getNotes().size()-1;
+        NoteInfo note = sDataManager.getNotes().get(index);
+        onData(allOf(instanceOf(NoteInfo.class),equalTo(note))).perform(scrollTo(),click());
+        onView(withId(R.id.spinner_courses))
+                .check(matches(withSpinnerText(course.getTitle())));
+        onView(withId(R.id.text_note_title))
+                .check(matches(withText(containsString(noteTitle))));
+        onView(withId(R.id.text_note_text))
+                .check(matches(withText(containsString(noteText))));
     }
 }
