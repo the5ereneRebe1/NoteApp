@@ -123,6 +123,7 @@ public class NoteActivity extends AppCompatActivity {
             createNewNote();
         } else {
             mNote = DataManager.getInstance().getNotes().get(position);
+            mNotePosition=position;
         }
     }
 
@@ -161,21 +162,27 @@ public class NoteActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        MenuItem item = menu.findItem(R.id.action_next);
+        int lastIndex = DataManager.getInstance().getNotes().size()-1;
+        item.setEnabled(mNotePosition<lastIndex);
+
+        return super.onPrepareOptionsMenu(menu);
+    }
+
     private void nextItem() {
         saveNote();
-        if(noteExists(mNotePosition+1)){
-            ++mNotePosition;
-            mNote=DataManager.getInstance().getNotes().get(mNotePosition);
-            saveOriginalNoteValues();
-            displayNote(mSpinnerCourses,mTextNoteTitle,mTextNoteText);
-        }
+
+        ++mNotePosition;
+        mNote=DataManager.getInstance().getNotes().get(mNotePosition);
+        saveOriginalNoteValues();
+        displayNote(mSpinnerCourses,mTextNoteTitle,mTextNoteText);
+        invalidateOptionsMenu();
 
     }
 
-    private boolean noteExists(int i) {
-        if(i<=DataManager.getInstance().getNotes().size()-1)return true;
-        return false;
-    }
+
 
     private void sendEmail() {
         CourseInfo course = (CourseInfo) mSpinnerCourses.getSelectedItem();
