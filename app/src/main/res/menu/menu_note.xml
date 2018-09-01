@@ -7,8 +7,12 @@
         android:orderInCategory="100"
         android:title="Cancel"/>
     <item
-        android:id="@+id/action_send_mail"
         android:orderInCategory="101"
+        android:title="Next"
+        android:id="@+id/action_next"/>
+    <item
+        android:id="@+id/action_send_mail"
+        android:orderInCategory="102"
         android:title="Send as email"
         app:showAsAction="never"/>
 </menu>

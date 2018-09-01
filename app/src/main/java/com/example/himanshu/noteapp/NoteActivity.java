@@ -154,8 +154,27 @@ public class NoteActivity extends AppCompatActivity {
             mIsCancelling = true;
             finish();
         }
+        else if(id == R.id.action_next){
+            nextItem();
+        }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void nextItem() {
+        saveNote();
+        if(noteExists(mNotePosition+1)){
+            ++mNotePosition;
+            mNote=DataManager.getInstance().getNotes().get(mNotePosition);
+            saveOriginalNoteValues();
+            displayNote(mSpinnerCourses,mTextNoteTitle,mTextNoteText);
+        }
+
+    }
+
+    private boolean noteExists(int i) {
+        if(i<=DataManager.getInstance().getNotes().size()-1)return true;
+        return false;
     }
 
     private void sendEmail() {
