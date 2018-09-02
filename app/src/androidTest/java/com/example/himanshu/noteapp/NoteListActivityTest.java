@@ -34,7 +34,7 @@ public class NoteListActivityTest {
         sDataManager.initializeExampleNotes();
     }
     @Rule
-    public ActivityTestRule<NoteListActivity> mNoteListActivity = new ActivityTestRule<>(NoteListActivity.class);
+    public ActivityTestRule<MainActivity> mNoteListActivity = new ActivityTestRule<>(MainActivity.class);
 
     @Test
     public void createNote(){

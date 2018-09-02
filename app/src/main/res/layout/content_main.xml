@@ -5,10 +5,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.example.himanshu.noteapp.NoteListActivity"
-    tools:showIn="@layout/activity_note_list">
+    tools:context=".MainActivity"
+    tools:showIn="@layout/app_bar_main">
 
     <android.support.v7.widget.RecyclerView
+        android:id="@+id/note_list"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginBottom="8dp"
@@ -16,7 +17,6 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:id="@+id/recycler_list"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
