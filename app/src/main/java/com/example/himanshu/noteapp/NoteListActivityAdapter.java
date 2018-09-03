@@ -3,11 +3,13 @@ package com.example.himanshu.noteapp;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.constraint.Group;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -58,17 +60,21 @@ public class NoteListActivityAdapter extends RecyclerView.Adapter<NoteListActivi
             tvCourse = (TextView)itemView.findViewById(R.id.tv_course);
             tvTitle = (TextView)itemView.findViewById(R.id.tv_title);
             tvText = (TextView)itemView.findViewById(R.id.tv_text);
-            LinearLayout noteArea = (LinearLayout)itemView.findViewById(R.id.note_area);
-            final ImageButton start = (ImageButton)itemView.findViewById(R.id.favourite);
-            noteArea.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(context, NoteActivity.class);
+            Group group = (Group) itemView.findViewById(R.id.group2);
+            final ImageView start = (ImageView) itemView.findViewById(R.id.favourite);
+            int refIds[] = group.getReferencedIds();
+            for (int id : refIds) {
+                itemView.findViewById(id).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        // your code here.
+                        Intent intent = new Intent(context, NoteActivity.class);
 //                NoteInfo note = (NoteInfo) listNotes.getItemAtPosition(position);
-                    intent.putExtra(NoteActivity.NOTE_POSITION, notePosition);
-                    context.startActivity(intent);
-                }
-            });
+                        intent.putExtra(NoteActivity.NOTE_POSITION, notePosition);
+                        context.startActivity(intent);
+                    }
+                });
+            }
             start.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
