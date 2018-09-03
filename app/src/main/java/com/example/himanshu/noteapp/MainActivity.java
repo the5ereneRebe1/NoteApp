@@ -1,7 +1,9 @@
 package com.example.himanshu.noteapp;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,6 +17,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import java.util.List;
 
@@ -41,7 +44,7 @@ public class MainActivity extends AppCompatActivity
                 startActivity(new Intent(MainActivity.this, NoteActivity.class));
             }
         });
-
+        PreferenceManager.setDefaultValues(this,R.xml.pref_general,false);
         initializeDisplayContent();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -58,7 +61,21 @@ public class MainActivity extends AppCompatActivity
     protected void onResume() {
         super.onResume();
         noteListActivityAdapter.notifyDataSetChanged();
+        setNavigationHeader();
     }
+
+    private void setNavigationHeader() {
+        NavigationView nav = (NavigationView)findViewById(R.id.nav_view);
+        View header = nav.getHeaderView(0);
+        TextView userName = (TextView)header.findViewById(R.id.tv_user_name);
+        TextView userEmail = (TextView)header.findViewById(R.id.tv_user_email);
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+        String user = pref.getString("user_display_name"," ");
+        String email = pref.getString("user_email"," ");
+        userName.setText(user);
+        userEmail.setText(email);
+    }
+
     private void initializeDisplayContent() {
        /* final ListView listNotes = (ListView) findViewById(R.id.list_notes);
 
@@ -130,6 +147,7 @@ public class MainActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            startActivity(new Intent(this,SettingsActivity.class));
             return true;
         }
 
