@@ -27,6 +27,7 @@ public class MainActivity extends AppCompatActivity
     private NoteListActivityAdapter noteListActivityAdapter;
     private LinearLayoutManager linearLayoutManager;
     private RecyclerView recyclerView;
+    private NoteAppOpenHelper mDbopenHelper;
     private GridLayoutManager gridLayoutManager;
     private CourseListActivityAdapter courseListActivityAdapter;
 
@@ -37,6 +38,7 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        mDbopenHelper = new NoteAppOpenHelper(this);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -55,6 +57,12 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        mDbopenHelper.close();
+        super.onDestroy();
     }
 
     @Override
@@ -104,6 +112,7 @@ public class MainActivity extends AppCompatActivity
         List<NoteInfo> notes = DataManager.getInstance().getNotes();
         noteListActivityAdapter = new NoteListActivityAdapter(this,notes);
         recyclerView.setAdapter(noteListActivityAdapter);
+        mDbopenHelper.getReadableDatabase();
 
         SetNavigationMenuItemChecked(R.id.nav_notes);
     }
