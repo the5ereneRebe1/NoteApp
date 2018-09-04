@@ -101,6 +101,7 @@ public class MainActivity extends AppCompatActivity
                 startActivity(intent);
             }
         });*/
+        DataManager.loadFromDatabase(mDbopenHelper);
         recyclerView = (RecyclerView)findViewById(R.id.note_list);
         linearLayoutManager = new LinearLayoutManager(this);
         gridLayoutManager = new GridLayoutManager(this,2);
@@ -112,7 +113,7 @@ public class MainActivity extends AppCompatActivity
         List<NoteInfo> notes = DataManager.getInstance().getNotes();
         noteListActivityAdapter = new NoteListActivityAdapter(this,notes);
         recyclerView.setAdapter(noteListActivityAdapter);
-        mDbopenHelper.getReadableDatabase();
+
 
         SetNavigationMenuItemChecked(R.id.nav_notes);
     }
