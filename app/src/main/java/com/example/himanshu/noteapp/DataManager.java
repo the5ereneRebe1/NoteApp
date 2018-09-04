@@ -29,7 +29,7 @@ public class DataManager {
         String[] courseColumns = {CourseInfoEntry.COLUMN_COURSE_ID, CourseInfoEntry.COLUMN_COURSE_TITLE};
         Cursor courseQuery = db.query(CourseInfoEntry.TABLE_NAME, courseColumns, null, null, null, null, CourseInfoEntry.COLUMN_COURSE_TITLE+ " DESC");
         loadCourseFromDatabase(courseQuery);
-        String[] noteColumns = {NoteInfoEntry.COLUMN_NOTE_TITLE, NoteInfoEntry.COLUMN_NOTE_TEXT, NoteInfoEntry.COLUMN_COURSE_ID};
+        String[] noteColumns = {NoteInfoEntry.COLUMN_NOTE_TITLE, NoteInfoEntry.COLUMN_NOTE_TEXT, NoteInfoEntry.COLUMN_COURSE_ID,NoteInfoEntry._ID};
         Cursor noteQuery = db.query(NoteInfoEntry.TABLE_NAME, noteColumns, null, null, null, null,NoteInfoEntry.COLUMN_COURSE_ID+","+NoteInfoEntry.COLUMN_NOTE_TITLE);
         loadNotesFromDatabase(noteQuery);
     }
@@ -40,12 +40,15 @@ public class DataManager {
         int courseIdPos = cursor.getColumnIndex(NoteInfoEntry.COLUMN_COURSE_ID);
         int noteTitlePos = cursor.getColumnIndex(NoteInfoEntry.COLUMN_NOTE_TITLE);
         int noteTextPos = cursor.getColumnIndex(NoteInfoEntry.COLUMN_NOTE_TEXT);
+        int idPos = cursor.getColumnIndex(NoteInfoEntry._ID);
         while(cursor.moveToNext()){
             String courseId = cursor.getString(courseIdPos);
             String noteTitle = cursor.getString(noteTitlePos);
             String noteText = cursor.getString(noteTextPos);
+            int id = cursor.getInt(idPos);
             CourseInfo course = dm.getCourse(courseId);
-            NoteInfo noteInfo = new NoteInfo(course,noteTitle,noteText);
+
+            NoteInfo noteInfo = new NoteInfo(course,noteTitle,noteText,id);
             dm.mNotes.add(noteInfo);
         }
         cursor.close();
@@ -78,7 +81,7 @@ public class DataManager {
     }
 
     public int createNewNote() {
-        NoteInfo note = new NoteInfo(null, null, null);
+        NoteInfo note = new NoteInfo(null,null, null);
         mNotes.add(note);
         return mNotes.size() -1;
     }
@@ -138,7 +141,7 @@ public class DataManager {
         mCourses.add(initializeCourse4());
     }
 
-    public void initializeExampleNotes() {
+   /* public void initializeExampleNotes() {
         final DataManager dm = getInstance();
 
         CourseInfo course = dm.getCourse("android_intents");
@@ -180,7 +183,7 @@ public class DataManager {
         mNotes.add(new NoteInfo(course, "Serialization",
                 "Remember to include SerialVersionUID to assure version compatibility"));
     }
-
+*/
     private CourseInfo initializeCourse1() {
         List<ModuleInfo> modules = new ArrayList<>();
         modules.add(new ModuleInfo("android_intents_m01", "Android Late Binding and Intents"));

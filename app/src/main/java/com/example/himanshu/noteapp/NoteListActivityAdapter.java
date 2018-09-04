@@ -8,9 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.List;
@@ -40,7 +38,7 @@ public class NoteListActivityAdapter extends RecyclerView.Adapter<NoteListActivi
         holder.tvCourse.setText(note.getCourse().getTitle());
         holder.tvTitle.setText(note.getTitle());
         holder.tvText.setText(note.getText());
-        holder.notePosition=position;
+        holder.noteid=note.getId();
     }
 
     @Override
@@ -53,7 +51,7 @@ public class NoteListActivityAdapter extends RecyclerView.Adapter<NoteListActivi
         private final TextView tvCourse;
         private final TextView tvTitle;
         private final TextView tvText;
-        private int notePosition;
+        private int noteid;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -63,14 +61,14 @@ public class NoteListActivityAdapter extends RecyclerView.Adapter<NoteListActivi
             Group group = (Group) itemView.findViewById(R.id.group2);
             final ImageView start = (ImageView) itemView.findViewById(R.id.favourite);
             int refIds[] = group.getReferencedIds();
-            for (int id : refIds) {
+            for (final int id : refIds) {
                 itemView.findViewById(id).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         // your code here.
                         Intent intent = new Intent(context, NoteActivity.class);
 //                NoteInfo note = (NoteInfo) listNotes.getItemAtPosition(position);
-                        intent.putExtra(NoteActivity.NOTE_POSITION, notePosition);
+                        intent.putExtra(NoteActivity.NOTE_ID,noteid);
                         context.startActivity(intent);
                     }
                 });
