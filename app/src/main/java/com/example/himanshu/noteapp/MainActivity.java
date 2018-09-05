@@ -2,6 +2,8 @@ package com.example.himanshu.noteapp;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
@@ -18,6 +20,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
+
+import com.example.himanshu.noteapp.NoteAppDatabaseContract.NoteInfoEntry;
 
 import java.util.List;
 
@@ -68,8 +72,15 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
-        noteListActivityAdapter.notifyDataSetChanged();
+        loadNotes();
         setNavigationHeader();
+    }
+
+    private void loadNotes() {
+        SQLiteDatabase db = mDbopenHelper.getReadableDatabase();
+        String[] noteColumns = {NoteInfoEntry.COLUMN_NOTE_TITLE, NoteInfoEntry.COLUMN_NOTE_TEXT, NoteInfoEntry.COLUMN_COURSE_ID, NoteInfoEntry._ID};
+        Cursor noteQuery = db.query(NoteInfoEntry.TABLE_NAME, noteColumns, null, null, null, null, NoteInfoEntry.COLUMN_COURSE_ID+","+ NoteInfoEntry.COLUMN_NOTE_TITLE);
+        noteListActivityAdapter.changeCursor(noteQuery);
     }
 
     private void setNavigationHeader() {
@@ -110,8 +121,8 @@ public class MainActivity extends AppCompatActivity
 
     private void displayNotes() {
         recyclerView.setLayoutManager(linearLayoutManager);
-        List<NoteInfo> notes = DataManager.getInstance().getNotes();
-        noteListActivityAdapter = new NoteListActivityAdapter(this,notes);
+
+        noteListActivityAdapter = new NoteListActivityAdapter(this,null);
         recyclerView.setAdapter(noteListActivityAdapter);
 
 
