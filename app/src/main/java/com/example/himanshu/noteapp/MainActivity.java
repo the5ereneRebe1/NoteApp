@@ -1,6 +1,9 @@
 package com.example.himanshu.noteapp;
 
+import android.app.LoaderManager;
+import android.content.CursorLoader;
 import android.content.Intent;
+import android.content.Loader;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -26,8 +29,9 @@ import com.example.himanshu.noteapp.NoteAppDatabaseContract.NoteInfoEntry;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, LoaderManager.LoaderCallbacks<Cursor> {
 
+    public static final int NOTES_LOADER = 0;
     private NoteListActivityAdapter noteListActivityAdapter;
     private LinearLayoutManager linearLayoutManager;
     private RecyclerView recyclerView;
@@ -72,16 +76,17 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
-        loadNotes();
+        //loadNotes();
+        getLoaderManager().restartLoader(NOTES_LOADER,null,this);
         setNavigationHeader();
     }
 
-    private void loadNotes() {
+  /*  private void loadNotes() {
         SQLiteDatabase db = mDbopenHelper.getReadableDatabase();
         String[] noteColumns = {NoteInfoEntry.COLUMN_NOTE_TITLE, NoteInfoEntry.COLUMN_NOTE_TEXT, NoteInfoEntry.COLUMN_COURSE_ID, NoteInfoEntry._ID};
         Cursor noteQuery = db.query(NoteInfoEntry.TABLE_NAME, noteColumns, null, null, null, null, NoteInfoEntry.COLUMN_COURSE_ID+","+ NoteInfoEntry.COLUMN_NOTE_TITLE);
         noteListActivityAdapter.changeCursor(noteQuery);
-    }
+    }*/
 
     private void setNavigationHeader() {
         NavigationView nav = (NavigationView)findViewById(R.id.nav_view);
@@ -195,5 +200,36 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        CursorLoader loader = null;
+        if(id==NOTES_LOADER){
+            loader = new CursorLoader(this){
+                @Override
+                public Cursor loadInBackground() {
+                    SQLiteDatabase db = mDbopenHelper.getReadableDatabase();
+                    String[] noteColumns = {NoteInfoEntry.COLUMN_NOTE_TITLE, NoteInfoEntry.COLUMN_NOTE_TEXT, NoteInfoEntry.COLUMN_COURSE_ID, NoteInfoEntry._ID};
+                    return db.query(NoteInfoEntry.TABLE_NAME, noteColumns, null, null, null, null, NoteInfoEntry.COLUMN_COURSE_ID+","+ NoteInfoEntry.COLUMN_NOTE_TITLE);
+
+                }
+            };
+        }
+        return loader;
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        if(loader.getId()==NOTES_LOADER){
+            noteListActivityAdapter.changeCursor(data);
+        }
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        if(loader.getId()==NOTES_LOADER){
+            noteListActivityAdapter.changeCursor(null);
+        }
     }
 }
