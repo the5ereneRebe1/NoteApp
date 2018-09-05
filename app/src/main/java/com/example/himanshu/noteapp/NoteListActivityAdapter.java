@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.himanshu.noteapp.NoteAppDatabaseContract.CourseInfoEntry;
 import com.example.himanshu.noteapp.NoteAppDatabaseContract.NoteInfoEntry;
 
 import java.util.List;
@@ -36,10 +37,11 @@ public class NoteListActivityAdapter extends RecyclerView.Adapter<NoteListActivi
     private void populateColumnViews() {
         if(mCursor==null)
             return;
-        mCoursePos = mCursor.getColumnIndex(NoteInfoEntry.COLUMN_COURSE_ID);
+        mCoursePos = mCursor.getColumnIndex(CourseInfoEntry.COLUMN_COURSE_TITLE);
         mNoteTitlePos = mCursor.getColumnIndex(NoteInfoEntry.COLUMN_NOTE_TITLE);
         mNoteTextPos = mCursor.getColumnIndex(NoteInfoEntry.COLUMN_NOTE_TEXT);
         mIdpos = mCursor.getColumnIndex(NoteInfoEntry._ID);
+
     }
     public void changeCursor(Cursor cursor){
         if(mCursor!=null)

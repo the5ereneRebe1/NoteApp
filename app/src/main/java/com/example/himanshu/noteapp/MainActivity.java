@@ -1,5 +1,6 @@
 package com.example.himanshu.noteapp;
 
+import android.annotation.SuppressLint;
 import android.app.LoaderManager;
 import android.content.CursorLoader;
 import android.content.Intent;
@@ -24,6 +25,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import com.example.himanshu.noteapp.NoteAppDatabaseContract.CourseInfoEntry;
 import com.example.himanshu.noteapp.NoteAppDatabaseContract.NoteInfoEntry;
 
 import java.util.List;
@@ -202,6 +204,7 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+    @SuppressLint("StaticFieldLeak")
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         CursorLoader loader = null;
@@ -210,8 +213,14 @@ public class MainActivity extends AppCompatActivity
                 @Override
                 public Cursor loadInBackground() {
                     SQLiteDatabase db = mDbopenHelper.getReadableDatabase();
-                    String[] noteColumns = {NoteInfoEntry.COLUMN_NOTE_TITLE, NoteInfoEntry.COLUMN_NOTE_TEXT, NoteInfoEntry.COLUMN_COURSE_ID, NoteInfoEntry._ID};
-                    return db.query(NoteInfoEntry.TABLE_NAME, noteColumns, null, null, null, null, NoteInfoEntry.COLUMN_COURSE_ID+","+ NoteInfoEntry.COLUMN_NOTE_TITLE);
+                    String[] noteColumns = {NoteInfoEntry.COLUMN_NOTE_TITLE,
+                            NoteInfoEntry.COLUMN_NOTE_TEXT,
+                            NoteInfoEntry.getQname(NoteInfoEntry._ID),
+                            CourseInfoEntry.COLUMN_COURSE_TITLE};
+                    String tableWithJoin = NoteInfoEntry.TABLE_NAME+" JOIN "+ CourseInfoEntry.TABLE_NAME+" ON "+
+                            NoteInfoEntry.getQname(NoteInfoEntry.COLUMN_COURSE_ID)+" = "+CourseInfoEntry.getQname(CourseInfoEntry.COLUMN_COURSE_ID);
+                    String orderBy = CourseInfoEntry.COLUMN_COURSE_TITLE + "," + NoteInfoEntry.COLUMN_NOTE_TITLE;
+                    return db.query(tableWithJoin, noteColumns, null, null, null, null, orderBy);
 
                 }
             };
