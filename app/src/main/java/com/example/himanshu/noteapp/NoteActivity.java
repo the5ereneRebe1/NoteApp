@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -92,7 +93,7 @@ public class NoteActivity extends AppCompatActivity implements LoaderManager.Loa
         adapterCourses.changeCursor(courseCursor);
     }
 
-    private void loadNoteData() {
+  /*  private void loadNoteData() {
         SQLiteDatabase db = mOpenDbHelper.getReadableDatabase();
         String selection = NoteInfoEntry._ID +"= ?";
         String selectionArgs[] ={Integer.toString(mNoteId)};
@@ -104,7 +105,7 @@ public class NoteActivity extends AppCompatActivity implements LoaderManager.Loa
         cursor.moveToNext();
         displayNote();
     }
-
+*/
     private void restoreOriginalNoteValues(Bundle savedInstanceState) {
         mOriginalNoteCourseId = savedInstanceState.getString(ORIGINAL_NOTE_COURSE_ID);
         mOriginalNoteTitle = savedInstanceState.getString(ORIGINAL_NOTE_TITLE);
@@ -329,17 +330,11 @@ public class NoteActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @SuppressLint("StaticFieldLeak")
     private CursorLoader createLoaderCourse() {
+        Uri uri = Uri.parse("content://com.example.himanshu.noteapp.provider");
         courseLoaderQueryFinished = false;
-        return new CursorLoader(this){
-            @Override
-            public Cursor loadInBackground() {
-                SQLiteDatabase db = mOpenDbHelper.getReadableDatabase();
-                String courseColumns[] = {
-                        CourseInfoEntry.COLUMN_COURSE_TITLE,CourseInfoEntry.COLUMN_COURSE_ID,CourseInfoEntry._ID};
-                return db.query(CourseInfoEntry.TABLE_NAME,courseColumns,null,null,null,null,CourseInfoEntry.COLUMN_COURSE_TITLE);
-
-            }
-        };
+        String courseColumns[] = {
+                CourseInfoEntry.COLUMN_COURSE_TITLE,CourseInfoEntry.COLUMN_COURSE_ID,CourseInfoEntry._ID};
+        return new CursorLoader(this,uri,courseColumns,null,null,CourseInfoEntry.COLUMN_COURSE_TITLE);
     }
 
     @SuppressLint("StaticFieldLeak")

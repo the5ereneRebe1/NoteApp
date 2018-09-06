@@ -30,6 +30,12 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.himanshu.noteapp.MainActivity" />
         </activity>
+
+        <provider
+            android:name=".NoteAppContentProvider"
+            android:authorities="com.example.himanshu.noteapp.provider"
+            android:enabled="true"
+            android:exported="true"></provider>
     </application>
 
 </manifest>
