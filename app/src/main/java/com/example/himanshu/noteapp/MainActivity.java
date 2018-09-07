@@ -27,6 +27,7 @@ import android.widget.TextView;
 
 import com.example.himanshu.noteapp.NoteAppDatabaseContract.CourseInfoEntry;
 import com.example.himanshu.noteapp.NoteAppDatabaseContract.NoteInfoEntry;
+import com.example.himanshu.noteapp.NoteAppProviderContract.Notes;
 
 import java.util.List;
 
@@ -209,21 +210,12 @@ public class MainActivity extends AppCompatActivity
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         CursorLoader loader = null;
         if(id==NOTES_LOADER){
-            loader = new CursorLoader(this){
-                @Override
-                public Cursor loadInBackground() {
-                    SQLiteDatabase db = mDbopenHelper.getReadableDatabase();
-                    String[] noteColumns = {NoteInfoEntry.COLUMN_NOTE_TITLE,
-                            NoteInfoEntry.COLUMN_NOTE_TEXT,
+            String[] noteColumns = {Notes.COLUMN_NOTE_TITLE,
+                            Notes.COLUMN_NOTE_TEXT,
                             NoteInfoEntry.getQname(NoteInfoEntry._ID),
-                            CourseInfoEntry.COLUMN_COURSE_TITLE};
-                    String tableWithJoin = NoteInfoEntry.TABLE_NAME+" JOIN "+ CourseInfoEntry.TABLE_NAME+" ON "+
-                            NoteInfoEntry.getQname(NoteInfoEntry.COLUMN_COURSE_ID)+" = "+CourseInfoEntry.getQname(CourseInfoEntry.COLUMN_COURSE_ID);
-                    String orderBy = CourseInfoEntry.COLUMN_COURSE_TITLE + "," + NoteInfoEntry.COLUMN_NOTE_TITLE;
-                    return db.query(tableWithJoin, noteColumns, null, null, null, null, orderBy);
-
-                }
-            };
+                            Notes.COLUMN_COURSE_TITLE};
+            String orderBy = Notes.COLUMN_COURSE_TITLE + "," + Notes.COLUMN_NOTE_TITLE;
+            loader =new CursorLoader(this, Notes.CONTENT_URI_EXPANDED,noteColumns,null,null,orderBy);
         }
         return loader;
     }

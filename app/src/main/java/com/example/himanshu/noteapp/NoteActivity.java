@@ -23,6 +23,7 @@ import android.widget.Spinner;
 
 import com.example.himanshu.noteapp.NoteAppDatabaseContract.CourseInfoEntry;
 import com.example.himanshu.noteapp.NoteAppDatabaseContract.NoteInfoEntry;
+import com.example.himanshu.noteapp.NoteAppProviderContract.Courses;
 
 import java.util.List;
 
@@ -330,11 +331,11 @@ public class NoteActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @SuppressLint("StaticFieldLeak")
     private CursorLoader createLoaderCourse() {
-        Uri uri = Uri.parse("content://com.example.himanshu.noteapp.provider");
+        Uri uri = Courses.CONTENT_URI;
         courseLoaderQueryFinished = false;
         String courseColumns[] = {
-                CourseInfoEntry.COLUMN_COURSE_TITLE,CourseInfoEntry.COLUMN_COURSE_ID,CourseInfoEntry._ID};
-        return new CursorLoader(this,uri,courseColumns,null,null,CourseInfoEntry.COLUMN_COURSE_TITLE);
+                Courses.COLUMN_COURSE_TITLE,Courses.COLUMN_COURSE_ID,Courses._ID};
+        return new CursorLoader(this,uri,courseColumns,null,null,Courses.COLUMN_COURSE_TITLE);
     }
 
     @SuppressLint("StaticFieldLeak")
