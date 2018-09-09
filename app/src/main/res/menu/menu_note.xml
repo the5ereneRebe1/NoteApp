@@ -9,6 +9,10 @@
         android:title="Cancel"
         app:showAsAction="ifRoom|withText" />
     <item
+        android:id="@+id/action_reminder"
+        android:title="Set Reminder"
+        app:showAsAction="never" />
+    <item
         android:id="@+id/action_send_mail"
         android:orderInCategory="102"
         android:title="Send as email"

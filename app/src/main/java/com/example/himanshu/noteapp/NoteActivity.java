@@ -2,6 +2,7 @@ package com.example.himanshu.noteapp;
 
 import android.annotation.SuppressLint;
 import android.app.LoaderManager;
+import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.CursorLoader;
@@ -277,8 +278,18 @@ public class NoteActivity extends AppCompatActivity implements LoaderManager.Loa
         else if(id == R.id.action_next){
             nextItem();
         }
+        else if(id == R.id.action_reminder){
+            showReminder();
+        }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void showReminder() {
+        String noteText = mTextNoteText.getText().toString();
+        String noteeTitle = mTextNoteTitle.getText().toString();
+
+        NoteAppNotification.notify(this,noteeTitle,noteText,mNoteId);
     }
 
     @Override
