@@ -8,7 +8,9 @@ import android.content.Loader;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.GridLayoutManager;
@@ -48,6 +50,7 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        setStrictModePolicy();
 
         mDbopenHelper = new NoteAppOpenHelper(this);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -57,7 +60,7 @@ public class MainActivity extends AppCompatActivity
                 startActivity(new Intent(MainActivity.this, NoteActivity.class));
             }
         });
-        PreferenceManager.setDefaultValues(this,R.xml.pref_general,false);
+        //PreferenceManager.setDefaultValues(this,R.xml.pref_general,false);
         initializeDisplayContent();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -68,6 +71,14 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+    }
+
+    private void setStrictModePolicy() {
+        if(BuildConfig.DEBUG){
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().detectAll().penaltyLog().build();
+            StrictMode.setThreadPolicy(policy);
+
+        }
     }
 
     @Override
@@ -81,7 +92,13 @@ public class MainActivity extends AppCompatActivity
         super.onResume();
         //loadNotes();
         getLoaderManager().restartLoader(NOTES_LOADER,null,this);
-        setNavigationHeader();
+        AsyncTask task =new AsyncTask() {
+            @Override
+            protected Object doInBackground(Object[] objects) {
+                setNavigationHeader();
+                return null;
+            }
+        };
     }
 
   /*  private void loadNotes() {
@@ -120,7 +137,7 @@ public class MainActivity extends AppCompatActivity
                 startActivity(intent);
             }
         });*/
-        DataManager.loadFromDatabase(mDbopenHelper);
+        //DataManager.loadFromDatabase(mDbopenHelper);
         recyclerView = (RecyclerView)findViewById(R.id.note_list);
         linearLayoutManager = new LinearLayoutManager(this);
         gridLayoutManager = new GridLayoutManager(this,2);

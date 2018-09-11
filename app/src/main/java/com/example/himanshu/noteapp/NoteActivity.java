@@ -38,7 +38,7 @@ public class NoteActivity extends AppCompatActivity implements LoaderManager.Loa
     public static final int ID_NOT_SET = -1;
     public static final int NOTES_LOADER = 0;
     public static final int COURSE_LOADER = 1;
-    private NoteInfo mNote = new NoteInfo(DataManager.getInstance().getCourses().get(0), "", "");
+    private NoteInfo mNote;
     private boolean mIsNewNote;
     private Spinner mSpinnerCourses;
     private EditText mTextNoteTitle;
@@ -77,11 +77,7 @@ public class NoteActivity extends AppCompatActivity implements LoaderManager.Loa
         //loadCourseData();
         getLoaderManager().initLoader(COURSE_LOADER,null,this);
         readDisplayStateValues();
-        if(savedInstanceState == null) {
-            saveOriginalNoteValues();
-        } else {
-            restoreOriginalNoteValues(savedInstanceState);
-        }
+        if(savedInstanceState != null) restoreOriginalNoteValues(savedInstanceState);
 
         mTextNoteTitle = (EditText) findViewById(R.id.text_note_title);
         mTextNoteText = (EditText) findViewById(R.id.text_note_text);
@@ -117,13 +113,7 @@ public class NoteActivity extends AppCompatActivity implements LoaderManager.Loa
         mOriginalNoteText = savedInstanceState.getString(ORIGINAL_NOTE_TEXT);
     }
 
-    private void saveOriginalNoteValues() {
-        if(mIsNewNote)
-            return;
-        mOriginalNoteCourseId = mNote.getCourse().getCourseId();
-        mOriginalNoteTitle = mNote.getTitle();
-        mOriginalNoteText = mNote.getText();
-    }
+
 
     @Override
     protected void onPause() {
@@ -132,7 +122,7 @@ public class NoteActivity extends AppCompatActivity implements LoaderManager.Loa
             if(mIsNewNote) {
                 deleteNoteFromDatabase();
             } else {
-                storePreviousNoteValues();
+                //storePreviousNoteValues();
             }
         } else {
             saveNote();
@@ -175,6 +165,7 @@ public class NoteActivity extends AppCompatActivity implements LoaderManager.Loa
         saveNoteToDatabase(courseId,noteTitle,noteText);
     }
 
+
     private String selectedCourseId() {
         int pos = mSpinnerCourses.getSelectedItemPosition();
         Cursor courseCursor = adapterCourses.getCursor();
@@ -208,6 +199,13 @@ public class NoteActivity extends AppCompatActivity implements LoaderManager.Loa
         mSpinnerCourses.setSelection(courseIndex);
         mTextNoteTitle.setText(cursor.getString(mNoteTitlePos));
         mTextNoteText.setText(cursor.getString(mNoteTextPos));
+        saveOriginalNoteValues();
+    }
+    private void saveOriginalNoteValues() {
+
+        mOriginalNoteCourseId = cursor.getString(mCourseIdPos);
+        mOriginalNoteTitle = cursor.getString(mNoteTitlePos);
+        mOriginalNoteText = cursor.getString(mNoteTextPos);
     }
 
     private int getCourseIndexOf(String courseId) {
@@ -231,6 +229,7 @@ public class NoteActivity extends AppCompatActivity implements LoaderManager.Loa
         mIsNewNote = mNoteId == ID_NOT_SET;
         if(mIsNewNote) {
             createNewNote();
+
         }
 
         Log.i("TAG", "mNoteId: " + mNoteId);
@@ -247,6 +246,7 @@ public class NoteActivity extends AppCompatActivity implements LoaderManager.Loa
            @Override
            protected Object doInBackground(Object[] objects) {
                newRowUri = getContentResolver().insert(Notes.CONTENT_URI,cv);
+               mNoteId = (int) ContentUris.parseId(newRowUri);
                return null;
            }
        };
