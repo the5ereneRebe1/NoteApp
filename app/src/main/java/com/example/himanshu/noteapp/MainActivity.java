@@ -2,6 +2,7 @@ package com.example.himanshu.noteapp;
 
 import android.annotation.SuppressLint;
 import android.app.LoaderManager;
+import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
@@ -10,12 +11,15 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -92,13 +96,20 @@ public class MainActivity extends AppCompatActivity
         super.onResume();
         //loadNotes();
         getLoaderManager().restartLoader(NOTES_LOADER,null,this);
-        AsyncTask task =new AsyncTask() {
+        setNavigationHeader();
+        openNavigationDrawer();
+
+    }
+
+    private void openNavigationDrawer() {
+        Handler handler = new Handler(Looper.getMainLooper());
+        handler.postDelayed(new Runnable() {
             @Override
-            protected Object doInBackground(Object[] objects) {
-                setNavigationHeader();
-                return null;
+            public void run() {
+                DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+                drawer.openDrawer(Gravity.START);
             }
-        };
+        },1000);
     }
 
   /*  private void loadNotes() {
@@ -109,15 +120,27 @@ public class MainActivity extends AppCompatActivity
     }*/
 
     private void setNavigationHeader() {
-        NavigationView nav = (NavigationView)findViewById(R.id.nav_view);
-        View header = nav.getHeaderView(0);
-        TextView userName = (TextView)header.findViewById(R.id.tv_user_name);
-        TextView userEmail = (TextView)header.findViewById(R.id.tv_user_email);
-        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
-        String user = pref.getString("user_display_name"," ");
-        String email = pref.getString("user_email"," ");
-        userName.setText(user);
-        userEmail.setText(email);
+        AsyncTask<Context,Void,SharedPreferences> task = new AsyncTask<Context, Void, SharedPreferences>() {
+            @Override
+            protected SharedPreferences doInBackground(Context... contexts) {
+                Context context = contexts[0];
+                SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
+                return pref;
+            }
+
+            @Override
+            protected void onPostExecute(SharedPreferences pref) {
+                NavigationView nav = (NavigationView)findViewById(R.id.nav_view);
+                View header = nav.getHeaderView(0);
+                TextView userName = (TextView)header.findViewById(R.id.tv_user_name);
+                TextView userEmail = (TextView)header.findViewById(R.id.tv_user_email);
+                String user = pref.getString("user_display_name"," ");
+                String email = pref.getString("user_email"," ");
+                userName.setText(user);
+                userEmail.setText(email);
+            }
+        };
+
     }
 
     private void initializeDisplayContent() {

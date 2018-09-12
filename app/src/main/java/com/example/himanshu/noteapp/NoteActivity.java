@@ -242,15 +242,22 @@ public class NoteActivity extends AppCompatActivity implements LoaderManager.Loa
        cv.put(Notes.COLUMN_COURSE_ID,"");
        cv.put(Notes.COLUMN_NOTE_TITLE,"");
        cv.put(Notes.COLUMN_NOTE_TEXT,"");
-       AsyncTask task = new AsyncTask() {
+       AsyncTask<ContentValues,Void,Uri> task = new AsyncTask<ContentValues, Void, Uri>() {
            @Override
-           protected Object doInBackground(Object[] objects) {
-               newRowUri = getContentResolver().insert(Notes.CONTENT_URI,cv);
-               mNoteId = (int) ContentUris.parseId(newRowUri);
-               return null;
+           protected Uri doInBackground(ContentValues... contentValues) {
+               ContentValues values = contentValues[0];
+               Uri noteUri = getContentResolver().insert(Notes.CONTENT_URI,values);
+               return noteUri;
            }
+
+           @Override
+           protected void onPostExecute(Uri uri) {
+               newRowUri=uri;
+               mNoteId=(int) ContentUris.parseId(uri);
+           }
+
        };
-       task.execute();
+       task.execute(cv);
     }
 
     @Override
