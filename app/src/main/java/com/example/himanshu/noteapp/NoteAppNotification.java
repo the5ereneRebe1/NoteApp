@@ -50,7 +50,8 @@ public class NoteAppNotification {
         final Bitmap picture = BitmapFactory.decodeResource(res, R.drawable.example_picture);
         Intent intent = new Intent(context,NoteActivity.class);
         intent.putExtra(NoteActivity.NOTE_ID,mNoteId);
-
+        Intent backupServiceIntent = new Intent(context, BackupIntentService.class);
+        backupServiceIntent.putExtra(BackupIntentService.EXTRA_COURSE_ID, NoteBackup.ALL_COURSES);
 
 
         final NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
@@ -109,7 +110,8 @@ public class NoteAppNotification {
                 .addAction(0,"View All notes",PendingIntent.getActivity(context,
                         0,
                         new Intent(context,MainActivity.class),PendingIntent.FLAG_UPDATE_CURRENT))
-
+                .addAction(0,"Backup Notes",PendingIntent.getService(context,0,
+                        backupServiceIntent,PendingIntent.FLAG_UPDATE_CURRENT))
                 // Example additional actions for this notification. These will
                 // only show on devices running Android 4.1 or later, so you
                 // should ensure that the activity in this notification's

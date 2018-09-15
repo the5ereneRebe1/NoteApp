@@ -10,18 +10,19 @@ import android.content.Intent;
  * <p>
  * TODO: Customize class - update intent actions and extra parameters.
  */
-public class MyIntentService extends IntentService {
+public class BackupIntentService extends IntentService {
 
     public static final String EXTRA_COURSE_ID = "com.example.himanshu.noteapp.extra.COURSE_ID";
 
-    public MyIntentService() {
-        super("MyIntentService");
+    public BackupIntentService() {
+        super("BackupIntentService");
     }
 
     @Override
     protected void onHandleIntent(Intent intent) {
         if (intent != null) {
-
+            String courseId = intent.getStringExtra(EXTRA_COURSE_ID);
+            NoteBackup.doBackup(this,courseId);
 
 
         }

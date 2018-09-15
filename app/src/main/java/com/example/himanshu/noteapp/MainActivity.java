@@ -223,6 +223,11 @@ public void swapList(List<Object> list){
             startActivity(new Intent(this,SettingsActivity.class));
             return true;
         }
+        else if(id==R.id.action_backup){
+            Intent intent = new Intent(this,BackupIntentService.class);
+            intent.putExtra(BackupIntentService.EXTRA_COURSE_ID,NoteBackup.ALL_COURSES);
+            startService(intent);
+        }
 
         return super.onOptionsItemSelected(item);
     }
