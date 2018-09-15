@@ -111,7 +111,11 @@ public class MainActivity extends AppCompatActivity
             }
         },1000);
     }
-
+public void swapList(List<Object> list){
+        Object temp=list.get(0);
+        list.add(0,list.get(list.size()-1));
+        list.add(list.size()-1,temp);
+}
   /*  private void loadNotes() {
         SQLiteDatabase db = mDbopenHelper.getReadableDatabase();
         String[] noteColumns = {NoteInfoEntry.COLUMN_NOTE_TITLE, NoteInfoEntry.COLUMN_NOTE_TEXT, NoteInfoEntry.COLUMN_COURSE_ID, NoteInfoEntry._ID};

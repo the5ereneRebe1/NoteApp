@@ -38,6 +38,10 @@
             android:authorities="com.example.himanshu.noteapp.provider"
             android:enabled="true"
             android:exported="true" />
+
+        <service
+            android:name=".MyIntentService"
+            android:exported="false"></service>
     </application>
 
 </manifest>
